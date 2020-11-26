@@ -1,0 +1,12 @@
+build
+node_modules
+npm-debug.log
+coverage
+petitions
+
+dist
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
