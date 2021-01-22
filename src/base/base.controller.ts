@@ -16,13 +16,17 @@ export default class BaseController {
             const projection = queryParser.getProjection(req.query);
             const options = queryParser.getOptions(req.query);
             const populate = queryParser.getPopulationOptions(req.query);
-            const data = await this.baseManager.getAll(filters, projection, options, populate);
-            if (!data) {
+            const result = await this.baseManager.getAll(filters, projection, options, populate);
+            if (!result) {
                 throw new Error('No elements found');
             }
             return res.status(200).send({
                 message: `Resources retrieved successfully`,
-                data: data,
+                data: result.data,
+                _metada: {
+                  page: result.page,
+                  pages: result.pages
+                }
             });
         } catch (e) {
             this.handleError(res, e);

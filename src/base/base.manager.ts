@@ -12,8 +12,10 @@ export default class BaseManager<T = {}> {
         projection: string = '',
         options: Record<string, unknown> = {},
         populateFields?: string[] | Record<string, string>[]
-    ): Promise<T[]> {
-        return this.baseModel.getAll(filters, projection, options);
+    ): Promise<{data: T[], count: number, page: number, pages:number}> {
+        return populateFields && populateFields.length != 0
+            ? this.baseModel.getAllPopulated(filters, projection, options, populateFields as string[])
+            : this.baseModel.getAll(filters, projection, options);
     }
 
     public getById(id: string, populateFields?: string[] | Record<string, string>[]): Promise<T> {

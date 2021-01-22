@@ -19,21 +19,34 @@ export default class BaseModel<S, T> {
         return this.repo.getById(id);
     }
 
-    getAll(filters: Record<string, unknown>, projection?: string, options?: Record<string, unknown>): Promise<T[]> {
-        return this.repo.get(filters, projection, options);
+    async getAll(filters: Record<string, unknown>, projection?: string, options?: Record<string, unknown>): Promise<{data: T[], count: number, page: number, pages:number}> {
+        const {skip, limit }: {skip: number, limit:number} = options as any;
+        const {data, count} = await this.repo.get(filters, projection, options);
+        return {
+            data,
+            count,
+            page: skip ? Math.round(skip/limit) : Math.round(1/limit),
+            pages: limit ? Math.round(count/limit) : Math.round(count/10)
+        }
     }
-
     getPopulatedById(id: string, populateFields: string[]): Promise<T> {
         return this.repo.getById(id, populateFields);
     }
 
-    getAllPopulated(
+    async getAllPopulated(
         filters: Record<string, unknown>,
-        projection?: Record<string, unknown>,
+        projection?: string,
         options?: Record<string, unknown>,
         populateFields?: string[]
-    ): Promise<T[]> {
-        return this.repo.get(filters, projection, options, populateFields);
+    ): Promise<{data: T[], count: number, page: number, pages:number}> {
+        const {skip, limit }: {skip: number, limit:number} = options as any;
+        const {data, count} = await this.repo.get(filters, projection, options, populateFields);
+        return {
+            data,
+            count,
+            page: skip ? Math.round(skip/limit) : Math.round(1/limit),
+            pages: limit ? Math.round(count/limit) : Math.round(count/10)
+        }
     }
 
     update(id: string, newEntity: Record<string, unknown>): Promise<T> {

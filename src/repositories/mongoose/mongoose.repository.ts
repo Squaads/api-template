@@ -1,4 +1,4 @@
-import { Query, QueryPopulateOptions, Schema, Types } from 'mongoose';
+import { Query, QueryPopulateOptions, Schema, Types, NativeError, Document } from 'mongoose';
 import BaseRepository from '../../base/base.repository';
 import mongooseConnector from './mongoose-connector.service';
 
@@ -25,9 +25,16 @@ export default class MongooseRepo implements BaseRepository {
     projection?: Object,
     options?: Object,
     populateFields?: string[] | QueryPopulateOptions[]
-  ): Promise<any[]> {
-    const model = await this.createModel();
-    return model.find(filter, projection, options).populate(populateFields).exec();
+    ): Promise<{data: Document[], count: number}> {
+      const model = await this.createModel();
+      const result = await new Promise<{data: Document[], count: number}>(async (resolve) => {
+          await model.find(filter, projection, options).populate(populateFields).exec(async (err, data) => {
+              if (data.length > 0) {
+                  return await model.count({}).exec((err: NativeError, count: number) => resolve ({ data, count,}));
+              }
+          });
+      })
+      return result;
   }
 
   async getById(_id: string, populateFields?: string[] | QueryPopulateOptions[]): Promise<any> {

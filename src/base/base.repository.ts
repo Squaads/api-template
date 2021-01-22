@@ -2,7 +2,7 @@ import { Query, QueryPopulateOptions, Schema, Types, model } from "mongoose";
 
 export default interface BaseRepository {
 
-    get(filter?: any, projection?: any, options?: any, populateFields?: any): Promise<any> 
+    get(filter?: any, projection?: any, options?: any, populateFields?: any): Promise<any> | Promise<{data: any[], count: number}> 
 
     getById(id: any, populateFields?: any): Promise<any> 
 
