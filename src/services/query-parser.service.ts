@@ -27,6 +27,10 @@ class QueryParserService {
       case 'like':
         return { [keyName]: { $regex: value, $options: 'i' } };
       case 'in':
+        const keyNameArray = keyName.split('.') 
+        if (keyNameArray.length > 1) {
+          return { [keyNameArray[0]] : { [`$elemMatch`]: { [keyNameArray[1]]: value } } }
+        }
         return { [keyName]: { [`$in`]: value.split(',') } };
       case undefined:
         return { [keyName]: { [`$eq`]: this.parseValue(value) } };
