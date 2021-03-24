@@ -7,7 +7,7 @@ dotenv.config();
 const { MONGO_BASE_URL, MONGO_URL, DB_PASSWORD, DB_USER } = process.env;
 
 const POOL_SIZE = 20;
-const models = [{ name: 'users', schema: UserSchema }];
+export const MONGOOSE_MODELS = [{ name: 'users', schema: UserSchema }];
 
 const dbOptions = {
   useNewUrlParser: true,
@@ -57,7 +57,7 @@ class MongooseConnector {
 
   async createConnection(db: string = 'Gesbanquete'): Promise<Connection> {
     const connection = await mongoose.createConnection(`${MONGO_BASE_URL}${DB_USER}:${DB_PASSWORD}${MONGO_URL}/${db}`, dbOptions);
-    models.forEach(({ name, schema }) => {
+    MONGOOSE_MODELS.forEach(({ name, schema }) => {
       connection.model(name, schema);
     });
     return connection;
