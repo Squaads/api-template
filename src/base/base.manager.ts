@@ -1,43 +1,47 @@
 import BaseModel from './base.model';
 
 export default class BaseManager<T = {}> {
-    baseModel: BaseModel<any, any>;
+  baseModel: BaseModel<any, any>;
 
-    constructor(baseModel: BaseModel<any, any>) {
-        this.baseModel = baseModel;
-    }
+  constructor(baseModel: BaseModel<any, any>) {
+    this.baseModel = baseModel;
+  }
 
-    public getAll(
-        filters: Record<string, unknown> = {},
-        projection: string = '',
-        options: Record<string, unknown> = {},
-        populateFields?: string[] | Record<string, string>[]
-    ): Promise<{data: T[], count: number, page: number, pages:number}> {
-        return populateFields && populateFields.length != 0
-            ? this.baseModel.getAllPopulated(filters, projection, options, populateFields as string[])
-            : this.baseModel.getAll(filters, projection, options);
-    }
+  public getCount(filters: Record<string, unknown> = {}): Promise<number> {
+    return this.baseModel.count(filters);
+  }
 
-    public getById(id: string, populateFields?: string[] | Record<string, string>[]): Promise<T> {
-        return this.baseModel.getById(id);
-    }
+  public getAll(
+    filters: Record<string, unknown> = {},
+    projection: string = '',
+    options: Record<string, unknown> = {},
+    populateFields?: string[] | Record<string, string>[]
+  ): Promise<T[]> {
+    return populateFields && populateFields.length != 0
+      ? this.baseModel.getAllPopulated(filters, projection, options, populateFields as string[])
+      : this.baseModel.getAll(filters, projection, options);
+  }
 
-    public create(newEntity: T): Promise<T> {
-        return this.baseModel.create(newEntity);
-    }
-    public createMany(newEntity: T[]): Promise<void> {
-        return this.baseModel.create(newEntity);
-    }
+  public getById(id: string, populateFields?: string[] | Record<string, string>[]): Promise<T> {
+    return this.baseModel.getById(id);
+  }
 
-    public delete(id: string): Promise<T> {
-        return this.baseModel.delete(id);
-    }
+  public create(newEntity: T): Promise<T> {
+    return this.baseModel.create(newEntity);
+  }
+  public createMany(newEntity: T[]): Promise<void> {
+    return this.baseModel.create(newEntity);
+  }
 
-    public update(id: string, newEntity: Record<keyof T, unknown>): Promise<T> {
-        return this.baseModel.update(id, newEntity);
-    }
+  public delete(id: string): Promise<T> {
+    return this.baseModel.delete(id);
+  }
 
-    public set(id: string, newEntity: T): Promise<T> {
-        return this.baseModel.set(id, newEntity);
-    }
+  public update(id: string, newEntity: Record<keyof T, unknown>): Promise<T> {
+    return this.baseModel.update(id, newEntity);
+  }
+
+  public set(id: string, newEntity: T): Promise<T> {
+    return this.baseModel.set(id, newEntity);
+  }
 }

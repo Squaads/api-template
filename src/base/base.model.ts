@@ -1,63 +1,54 @@
 import BaseRepository from './base.repository';
 
 export default class BaseModel<S, T> {
-    protected repo: BaseRepository;
+  protected repo: BaseRepository;
 
-    constructor(repo: BaseRepository) {
-        this.repo = repo;
-    }
+  constructor(repo: BaseRepository) {
+    this.repo = repo;
+  }
 
-    create(entity: S): Promise<T> {
-        return this.repo.create(entity);
-    }
+  count(filters: Object): Promise<number> {
+    return this.repo.count(filters);
+  }
 
-    createMany(entity: S[]): Promise<T> {
-        return this.repo.createMany(entity);
-    }
+  create(entity: S): Promise<T> {
+    return this.repo.create(entity);
+  }
 
-    getById(id: string): Promise<T> {
-        return this.repo.getById(id);
-    }
+  createMany(entity: S[]): Promise<T> {
+    return this.repo.createMany(entity);
+  }
 
-    async getAll(filters: Record<string, unknown>, projection?: string, options?: Record<string, unknown>): Promise<{data: T[], count: number, page: number, pages:number}> {
-        const {skip, limit }: {skip: number, limit:number} = options as any;
-        const {data, count} = await this.repo.get(filters, projection, options);
-        return {
-            data,
-            count,
-            page: skip ? Math.round(skip/limit) : Math.round(1/limit),
-            pages: limit ? Math.round(count/limit) : Math.round(count/10)
-        }
-    }
-    getPopulatedById(id: string, populateFields: string[]): Promise<T> {
-        return this.repo.getById(id, populateFields);
-    }
+  getById(id: string): Promise<T> {
+    return this.repo.getById(id);
+  }
 
-    async getAllPopulated(
-        filters: Record<string, unknown>,
-        projection?: string,
-        options?: Record<string, unknown>,
-        populateFields?: string[]
-    ): Promise<{data: T[], count: number, page: number, pages:number}> {
-        const {skip, limit }: {skip: number, limit:number} = options as any;
-        const {data, count} = await this.repo.get(filters, projection, options, populateFields);
-        return {
-            data,
-            count,
-            page: skip ? Math.round(skip/limit) : Math.round(1/limit),
-            pages: limit ? Math.round(count/limit) : Math.round(count/10)
-        }
-    }
+  async getAll(filters: Record<string, unknown>, projection?: string, options?: Record<string, unknown>): Promise<T[]> {
+    return this.repo.get(filters, projection, options);
+  }
 
-    update(id: string, newEntity: Record<string, unknown>): Promise<T> {
-        return this.repo.update(id, newEntity);
-    }
+  getPopulatedById(id: string, populateFields: string[]): Promise<T> {
+    return this.repo.getById(id, populateFields);
+  }
 
-    set(id: string, newEntity: S): Promise<T> {
-        return this.repo.set(id, newEntity);
-    }
+  async getAllPopulated(
+    filters: Record<string, unknown>,
+    projection?: string,
+    options?: Record<string, unknown>,
+    populateFields?: string[]
+  ): Promise<T[]> {
+    return this.repo.get(filters, projection, options, populateFields);
+  }
 
-    delete(id: string): Promise<T> {
-        return this.repo.delete(id);
-    }
+  update(id: string, newEntity: Record<string, unknown>): Promise<T> {
+    return this.repo.update(id, newEntity);
+  }
+
+  set(id: string, newEntity: S): Promise<T> {
+    return this.repo.set(id, newEntity);
+  }
+
+  delete(id: string): Promise<T> {
+    return this.repo.delete(id);
+  }
 }
