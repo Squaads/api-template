@@ -1,4 +1,3 @@
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -6,6 +5,7 @@ import morgan from 'morgan';
 import packageJSON from '../package.json';
 import apiRouter from './api/api.router';
 import mongooseConnector from './repositories/mongoose/mongoose-connector.service';
+const compression = require('compression')
 
 dotenv.config();
 
@@ -13,7 +13,8 @@ const app = express();
 
 /** Base server middlewares */
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(compression());
 morgan('tiny');
 
 /** Db Connector Management */
