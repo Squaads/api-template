@@ -31,7 +31,11 @@ class QueryParserService {
         if (keyNameArray.length > 1) {
           return { [keyNameArray[0]] : { [`$elemMatch`]: { [keyNameArray[1]]: value } } }
         }
-        return { [keyName]: { [`$in`]: value.split(',') } };
+        if (Array.isArray(value)) {
+          return { [keyName]: { [`$in`]: value } };
+        } else { 
+          return { [keyName]: { [`$in`]: value.split(',') } };
+        }
       case 'nin':
         const array = keyName.split('.');
         if (array.length > 1) {
