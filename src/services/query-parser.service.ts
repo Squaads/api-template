@@ -32,6 +32,16 @@ class QueryParserService {
           return { [keyNameArray[0]] : { [`$elemMatch`]: { [keyNameArray[1]]: value } } }
         }
         return { [keyName]: { [`$in`]: value.split(',') } };
+      case 'nin':
+        const array = keyName.split('.');
+        if (array.length > 1) {
+          return { [array[0]]: { [`$elemMatch`]: { [array[1]]: value } } };
+        }
+        if (Array.isArray(value)) {
+          return { [keyName]: { [`$nin`]: value } };
+        } else {
+          return { [keyName]: { [`$nin`]: value.split(',') } };
+        }
       case undefined:
         return { [keyName]: { [`$eq`]: this.parseValue(value) } };
       default:
