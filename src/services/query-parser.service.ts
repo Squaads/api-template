@@ -14,7 +14,7 @@ class QueryParserService {
 
   private getFiltersArray(query: UrlQuery) {
     return Object.entries(query).reduce((filterQuery, [key, value]) => {
-      if (key.startsWith('_')) {
+      if (key.startsWith('_') && !key.startsWith('_id')) {
         return filterQuery;
       }
       return [...filterQuery, this.getFilterQuery(key, value as string)];
