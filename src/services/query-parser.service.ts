@@ -14,7 +14,7 @@ class QueryParserService {
 
   private getFiltersArray(query: UrlQuery) {
     return Object.entries(query).reduce((filterQuery, [key, value]) => {
-      if (key.startsWith('_')) {
+      if (key.startsWith('_') && !key.startsWith('_id')) {
         return filterQuery;
       }
       return [...filterQuery, this.getFilterQuery(key, value as string)];
@@ -22,7 +22,13 @@ class QueryParserService {
   }
 
   private getFilterQuery(key: string, value: string): Record<string, unknown> {
-    const [keyName, operator] = key.split('_');
+    let keyName, operator;
+    if (key.startsWith('_id')) {
+      keyName = '_id';
+      operator = key.substr(4);
+    }else { 
+      [keyName, operator] = key.split('_');
+    }
     switch (operator) {
       case 'like':
         return { [keyName]: { $regex: value, $options: 'i' } };
@@ -31,7 +37,21 @@ class QueryParserService {
         if (keyNameArray.length > 1) {
           return { [keyNameArray[0]] : { [`$elemMatch`]: { [keyNameArray[1]]: value } } }
         }
-        return { [keyName]: { [`$in`]: value.split(',') } };
+        if (Array.isArray(value)) {
+          return { [keyName]: { [`$in`]: value } };
+        } else { 
+          return { [keyName]: { [`$in`]: value.split(',') } };
+        }
+      case 'nin':
+        const array = keyName.split('.');
+        if (array.length > 1) {
+          return { [array[0]]: { [`$elemMatch`]: { [array[1]]: value } } };
+        }
+        if (Array.isArray(value)) {
+          return { [keyName]: { [`$nin`]: value } };
+        } else {
+          return { [keyName]: { [`$nin`]: value.split(',') } };
+        }
       case undefined:
         return { [keyName]: { [`$eq`]: this.parseValue(value) } };
       default:
