@@ -22,7 +22,13 @@ class QueryParserService {
   }
 
   private getFilterQuery(key: string, value: string): Record<string, unknown> {
-    const [keyName, operator] = key.split('_');
+    let keyName, operator;
+    if (key.startsWith('_id')) {
+      keyName = '_id';
+      operator = key.substr(4);
+    }else { 
+      [keyName, operator] = key.split('_');
+    }
     switch (operator) {
       case 'like':
         return { [keyName]: { $regex: value, $options: 'i' } };
