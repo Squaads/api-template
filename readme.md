@@ -39,6 +39,8 @@ To configure these variables:
 - Copy and rename the `src/environments/firebase/client_config/firebase.config.example.ts` to `src/environments/firebase/client_config/firebase.config.[dev|prod|release].ts`
 - Open the files and fill then with the required values
 
+Aditionaly, you can configure your own tsconfig for every environment. You can check the different current files in root folder called `tsconfig.prod.json` ,  `tsconfig.staging.json`  and  `tsconfig.dev.json`.  They are associate with the equivalent command, for example `npm run staging` use a `tsc --build tsconfig.staging`.
+
 ### Main commands
 
 #### Development
@@ -65,6 +67,12 @@ For production use, start the server with:
 For release use, start the server with:
 
 `$ npm run release`
+
+### About deploys on Heroku
+
+This api has a Procfile but you can check you have 3 differents Procfile to use. They are associated with the scripts on package.json
+
+The file Procfile is ignored on .gitignore 
 
 ### Annotations 
 
