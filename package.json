@@ -6,8 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/src/index.js",
-    "dev": "cp ./src/environments/.env.dev ./.env && cp Procfile.dev Procfile nodemon ./src/index.ts",
-    "staging": "cp ./src/environments/.env.staging ./.env && cp Procfile.staging Procfile ts-node ./src/index.ts",
+    "dev": "cp ./src/environments/.env.dev ./.env && cp Procfile.dev Procfile && nodemon ./src/index.ts",
+    "staging": "cp ./src/environments/.env.staging ./.env && cp Procfile.staging Procfile && ts-node ./src/index.ts",
     "prod": "cp ./src/environments/.env.prod ./.env && cp Procfile.prod Procfile tsc --build tsconfig.prod.json && node ./dist/src/index.js",
     "wdev": "copy .\\src\\environments\\.env.dev .\\.env && copy Procfile.dev Procfile && nodemon .\\src\\index.ts",
     "wstaging": "copy .\\src\\environments\\.env.staging .\\.env && copy Procfile.staging Procfile && ts-node .\\src\\index.ts",
