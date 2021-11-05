@@ -28,7 +28,7 @@ class MongooseConnector {
     this.superConnection = await mongoose.createConnection(`${MONGO_BASE_URL}${DB_USER}:${DB_PASSWORD}${MONGO_URL}/super`, dbOptions);
   }
 
-  async connect(db: string = 'Gesbanquete'): Promise<Connection> {
+  async connect(db: string = 'default'): Promise<Connection> {
     if (db === 'super') {
       if (!this.superConnection) {
         this.superConnection = await mongoose.createConnection(`${MONGO_BASE_URL}${DB_USER}:${DB_PASSWORD}${MONGO_URL}/super`, dbOptions);

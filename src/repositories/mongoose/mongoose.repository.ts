@@ -21,7 +21,8 @@ export default class MongooseRepo implements BaseRepository {
   }
 
   private async createModel() {
-    const connection = await mongooseConnector.connect();
+    const { MONGO_DB_NAME } = process.env
+    const connection = await mongooseConnector.connect(MONGO_DB_NAME);
     return connection.model(this.collection, this.schema);
   }
 
