@@ -101,18 +101,41 @@ class QueryParserService {
       }),
     };
   }
+
   getPopulationOptions(query: UrlQuery): string[] | Record<string, string>[] {
     const { _embed } = query;
+
     if (!_embed) {
       return [];
     } else if (Array.isArray(_embed)) {
-      return _embed.map((path) => ({ path }));
+      return _embed.map((path) => ({path}));
+    } else if( _embed.split(',').length > 1) {
+      return _embed.split(',').map((field) => this.auxGetPopulationFields(field.trim()));
     } else {
-      return _embed.split(',').map((field) => {
-        return {
-          path: field,
-        };
-      });
+      return _embed.split(' ').map((field) => this.auxGetPopulationFields(field.trim()));
+    }
+  }
+
+  private auxGetPopulationFields(path: string): any {
+    let populate;
+    let pupoFields = path.split(':');
+    if (path.indexOf('_') > 0 ){
+      populate = path.split('_')[1].split(':')[0]
+      if (populate === 'id') {
+        populate = null;
+      }
+    }
+    let select = pupoFields.splice(1).join(' ').trim()
+    if (!populate) {
+      return {
+        path: pupoFields[0],
+        select
+      }
+    }
+    return {
+      path: pupoFields[0],
+      select,
+      populate: this.auxGetPopulationFields(populate)
     }
   }
 }
