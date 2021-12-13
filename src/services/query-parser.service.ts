@@ -116,12 +116,26 @@ class QueryParserService {
     }
   }
 
-  private auxGetPopulationFields(path: string) {
+  private auxGetPopulationFields(path: string): any {
+    let populate;
     let pupoFields = path.split(':');
+    if (path.indexOf('_') > 0 ){
+      populate = path.split('_')[1].split(':')[0]
+      if (populate === 'id') {
+        populate = null;
+      }
+    }
     let select = pupoFields.splice(1).join(' ').trim()
+    if (!populate) {
+      return {
+        path: pupoFields[0],
+        select
+      }
+    }
     return {
       path: pupoFields[0],
-      select
+      select,
+      populate: this.auxGetPopulationFields(populate)
     }
   }
 }
